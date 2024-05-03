@@ -19,7 +19,7 @@ def aggregatePayload(result):
     for i in range(len(result)):
         for j in range(len(result[i]["aspect"])):
             payload["Aspect Terms"].append(result[i]["aspect"][j])
-            payload["Sentiment of Aspects"].append(result[i]["confidence"][j])
+            payload["Sentiment of Aspects"].append(result[i]["sentiment"][j])
             payload["Confidence of Aspect"].append(result[i]["confidence"][j])
 
     return payload
@@ -27,7 +27,6 @@ def aggregatePayload(result):
 
 def MLModel(data):
     check_point_map = available_checkpoints()
-    print(check_point_map)
     if data != []:
         aspect_extractor = ATEPCCheckpointManager.get_aspect_extractor(
             checkpoint="english", auto_device=True
@@ -35,7 +34,6 @@ def MLModel(data):
         atepc_result = aspect_extractor.batch_predict(
             target_file=data, pred_sentiment=True, print_result=False, save_result=False
         )
-
         # iterate through all the atepc result objects and build payload
         finalPayload = aggregatePayload(atepc_result)
         return finalPayload
